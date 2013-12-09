@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <name>goin-api</name>
+
+  <!-- coordinates -->
+  <groupId>com.gocoin.api</groupId>
+  <artifactId>goin-api</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <!-- additional detail -->
+  <inceptionYear>2013</inceptionYear>
+  <url></url>
+
+  <organization>
+    <name></name>
+    <url></url>
+  </organization>
+
+  <!-- global properties -->
+  <properties>
+    <default.goals>clean install</default.goals>
+    <!-- compiler properties -->
+    <compiler.id>eclipse</compiler.id>
+    <compiler.source.level>1.6</compiler.source.level>
+    <compiler.target.level>1.6</compiler.target.level>
+    <compiler.show.warnings>true</compiler.show.warnings>
+    <compiler.show.deprecation>false</compiler.show.deprecation>
+    <!-- junit properties -->
+    <surefire.test.includes>**/*Test.java,**/*TestCase.java</surefire.test.includes>
+  </properties>
+
+  <!-- developers -->
+  <developers>
+    <developer>
+      <name>Aaron LaBella</name>
+      <email>aaronlabella@gmail.com</email>
+      <organization></organization>
+      <roles>
+        <role>Team Lead</role>
+        <role>Developer</role>
+      </roles>
+      <timezone>-5</timezone>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+    </contributor>
+  </contributors>
+
+  <!-- build settings -->
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>**/*.properties</include>
+          <include>META-INF/**</include>
+        </includes>
+        <excludes>
+          <exclude>**/.gitignore</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>**/**</include>
+        </includes>
+        <excludes>
+          <exclude>**/.gitignore</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>
+    </testResources>
+    <!--
+      =========================================================================
+      == P L U G I N    M A N A G E M E N T
+      =========================================================================
+      -->
+    <pluginManagement>
+      <plugins>
+        <!-- create a sources jar -->
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.1.2</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <excludeResources>true</excludeResources>
+          </configuration>
+        </plugin>
+        <!-- use the eclipse compiler from plexus -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.2</version>
+          <configuration>
+            <source>${compiler.source.level}</source>
+            <target>${compiler.target.level}</target>
+            <showWarnings>${compiler.show.warnings}</showWarnings>
+            <showDeprecation>${compiler.show.deprecation}</showDeprecation>
+            <encoding>UTF-8</encoding>
+            <debug>true</debug>
+            <verbose>true</verbose>
+            <!-- disable annotation processing -->
+            <proc>none</proc>
+            <optimize>true</optimize>
+            <compilerId>${compiler.id}</compilerId>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.eclipse.jdt.core.compiler</groupId>
+              <artifactId>ecj</artifactId>
+              <version>3.7.1</version>
+            </dependency>
+            <dependency>
+              <groupId>org.codehaus.plexus</groupId>
+              <artifactId>plexus-compiler-eclipse</artifactId>
+              <version>1.9.1</version>
+              <exclusions>
+                <exclusion>
+                  <groupId>org.eclipse.jdt</groupId>
+                  <artifactId>core</artifactId>
+                </exclusion>
+              </exclusions>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <!-- dont add the maven descriptors to jars -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.3.1</version>
+          <configuration>
+            <archive>
+              <addMavenDescriptor>false</addMavenDescriptor>
+              <manifestFile>src/main/java/META-INF/MANIFEST.MF</manifestFile>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.12</version>
+          <inherited>true</inherited>
+          <configuration>
+            <forkMode>once</forkMode>
+            <includes>
+              <include>${surefire.test.includes}</include>
+            </includes>
+            <systemPropertyVariables>
+              <java.awt.headless>true</java.awt.headless>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        <!-- xml-maven-plugin -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>xml-maven-plugin</artifactId>
+            <version>1.0</version>
+        </plugin>
+        <!-- copy resources in UTF-8 format -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.5</version>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-changes-plugin</artifactId>
+          <version>2.3</version>
+          <configuration>
+            <xmlPath>${basedir}/src/main/resources/changes.xml</xmlPath>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.0-beta-3</version>
+          <configuration>
+            <locales>en</locales>
+          </configuration>
+        </plugin>
+        <!-- note: these have to be here for standalone executions, ie: mvn findbugs:findbugs -->
+        <plugin>  
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>2.3.3</version>
+        </plugin>
+        <!-- note: these have to be here for standalone executions, ie: mvn pmd:pmd -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>2.5</version>
+          <configuration>
+            <targetJdk>1.5</targetJdk>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <!--
+      =========================================================================
+      == P L U G I N S
+      =========================================================================
+      -->
+    <plugins>
+      <!-- maven site plugin -->
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <locales>en</locales>
+          <reportPlugins>
+            <reportPlugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-project-info-reports-plugin</artifactId>
+              <version>2.3</version>
+            </reportPlugin>
+            <reportPlugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jxr-plugin</artifactId>
+              <version>2.2</version>
+            </reportPlugin>
+            <reportPlugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>taglist-maven-plugin</artifactId>
+              <version>2.4</version>
+              <configuration>
+                <tagListOptions>
+                  <tagClasses>
+                    <tagClass>
+                      <displayName>Todo Work</displayName>
+                      <tags>
+                        <tag>
+                          <matchString>todo</matchString>
+                          <matchType>ignoreCase</matchType>
+                        </tag>
+                        <tag>
+                          <matchString>FIXME</matchString>
+                          <matchType>ignoreCase</matchType>
+                        </tag>
+                      </tags>
+                    </tagClass>
+                  </tagClasses>
+                </tagListOptions>
+              </configuration>
+            </reportPlugin>
+            <reportPlugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>emma-maven-plugin</artifactId>
+              <version>1.0-alpha-2</version>
+            </reportPlugin>
+            <reportPlugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <version>2.6.1</version>
+              <configuration>
+                <detectLinks>false</detectLinks>
+                <links>
+                </links>
+                <attach>true</attach>
+              </configuration>
+            </reportPlugin>
+            <reportPlugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>findbugs-maven-plugin</artifactId>
+              <version>2.3.3</version>
+              <configuration>
+                <findbugsXmlOutput>true</findbugsXmlOutput>
+                <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                <xmlOutput>true</xmlOutput>
+                <effort>Max</effort>
+              </configuration>
+            </reportPlugin>
+            <reportPlugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-pmd-plugin</artifactId>
+              <version>2.5</version>
+              <configuration>
+                <targetJdk>1.5</targetJdk>
+              </configuration>
+            </reportPlugin>
+          </reportPlugins>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!--
+    =========================================================================
+    == R E P O R T I N G
+    =========================================================================
+    -->
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.6.1</version>
+        <inherited>true</inherited>
+      </plugin>
+      <plugin>  
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>2.3.3</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.5</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+        <version>2.4</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>emma-maven-plugin</artifactId>
+        <version>1.0-alpha-2</version>
+        <inherited>true</inherited>
+      </plugin>
+<!--
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>surefire-report-maven-plugin</artifactId>
+        <inherited>true</inherited>
+      </plugin>
+-->
+    </plugins>
+  </reporting>
+
+  <!-- build profiles -->
+  <profiles>
+    <profile>
+      <id>normal_build</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>build.profile</name>
+          <value>normal_build</value>
+        </property>
+      </activation>
+      <properties>
+      </properties>
+      <build>
+        <defaultGoal>${default.goals}</defaultGoal>
+      </build>
+    </profile>
+  </profiles>
+
+  <!-- dependencies -->
+  <dependencies>
+    <!-- json depend -->
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20131018</version>
+    </dependency>
+    <!-- junit -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>

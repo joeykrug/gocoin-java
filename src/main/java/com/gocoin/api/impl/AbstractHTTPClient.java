@@ -312,6 +312,11 @@ abstract public class AbstractHTTPClient implements HTTPClient
   abstract public void doPUT(URL u) throws Exception;
 
   /**
+   * send an HTTP DELETE request
+   */
+  abstract public void doDELETE(URL u) throws Exception;
+
+  /**
    * send an HTTP request
    */
   protected void doREQUEST(URL u) throws Exception

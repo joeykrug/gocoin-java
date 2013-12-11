@@ -14,7 +14,7 @@ import org.json.JSONObject;
 import com.gocoin.api.GoCoin;
 
 /**
- * a simple POJO class to represent a user
+ * a simple POJO class to represent an account
  *
  * {
  *   "id":"e6634e90-8ae2-4fc1-97a2-262990c755f4",

@@ -22,13 +22,18 @@ import java.util.TimeZone;
 import org.json.JSONObject;
 
 import com.gocoin.api.impl.SimpleHTTPClient;
+import com.gocoin.api.pojo.ExchangeRates;
 import com.gocoin.api.pojo.Token;
 import com.gocoin.api.services.AccountService;
 import com.gocoin.api.services.DepositAddressService;
+import com.gocoin.api.services.InvoiceService;
+import com.gocoin.api.services.MerchantService;
 import com.gocoin.api.services.MerchantUserService;
 import com.gocoin.api.services.UserService;
 import com.gocoin.api.services.impl.HTTPUserService;
 import com.gocoin.api.services.impl.HTTPDepositAddressService;
+import com.gocoin.api.services.impl.HTTPInvoiceService;
+import com.gocoin.api.services.impl.HTTPMerchantService;
 import com.gocoin.api.services.impl.HTTPMerchantUserService;
 import com.gocoin.api.services.impl.HTTPAccountService;
 
@@ -40,9 +45,14 @@ public final class GoCoin
 {
   //use coordinated univeral time format
   public static final String TIMESTAMP_PATTERN_CUT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+  public static final String TIMESTAMP_PATTERN_CUT_SERVER = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
   //our date formatter
   public static final DateFormat df = new SimpleDateFormat(TIMESTAMP_PATTERN_CUT);
+
+  //the exchange service url to use
+  public static final String EXCHANGE_HOST = "x.g0cn.com";
+  public static final String EXCHANGE_PATH = "/prices";
 
   /**
    * play the role of a factory and just return our simple client
@@ -72,6 +82,26 @@ public final class GoCoin
   {
     //TODO: support singletons
     return new HTTPAccountService();
+  }
+
+  /**
+   * play the role of a factory and just return our http service
+   * @return a InvoiceService
+   */
+  static public InvoiceService getInvoiceService()
+  {
+    //TODO: support singletons
+    return new HTTPInvoiceService();
+  }
+
+  /**
+   * play the role of a factory and just return our http service
+   * @return a MerchantService
+   */
+  static public MerchantService getMerchantService()
+  {
+    //TODO: support singletons
+    return new HTTPMerchantService();
   }
 
   /**
@@ -142,12 +172,38 @@ public final class GoCoin
   }
 
   /**
+   * get xrate
+   *
+   * Gets the xrate - aka current btc exchange rate in US Dollars
+   *
+   * @return the exchange rate
+   */
+  static public ExchangeRates getExchangeRates()
+  {
+    HTTPClient client = getHTTPClient();
+    client.setRequestOption(HTTPClient.KEY_OPTION_HOST,EXCHANGE_HOST);
+    client.setRequestOption(HTTPClient.KEY_OPTION_PATH,EXCHANGE_PATH);
+    client.setRequestOption(HTTPClient.KEY_OPTION_METHOD,HTTPClient.METHOD_GET);
+    try
+    {
+      //make the GET request
+      client.doGET(client.createURL(null));
+      return new ExchangeRates(client.getResponse());
+    }
+    catch (Exception e)
+    {
+      GoCoin.log(e);
+      return null;
+    }
+  }
+
+  /**
    * check the http client response, typically for 200s
    */
   static public void checkResponse(HTTPClient client) throws Exception
   {
     final Integer[] codes = new Integer[] {
-      Integer.valueOf(200), Integer.valueOf(204)
+      Integer.valueOf(200), Integer.valueOf(201), Integer.valueOf(204)
     };
     final Collection<Integer> validCodes = Arrays.asList(codes);
 
@@ -192,6 +248,25 @@ public final class GoCoin
     try
     {
       Date d = df.parse(s);
+      c.setTimeInMillis(d.getTime());
+      return c;
+    }
+    catch (ParseException e)
+    {
+      return null;
+    }
+  }
+
+  /**
+   * @return a Calendar object after parsing a CUT formatted timestamp
+   */
+  static public Calendar parseTimestamp(String s, String format)
+  {
+    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    try
+    {
+      DateFormat custom = new SimpleDateFormat(format);
+      Date d = custom.parse(s);
       c.setTimeInMillis(d.getTime());
       return c;
     }

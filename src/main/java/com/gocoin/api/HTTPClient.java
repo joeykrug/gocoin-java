@@ -69,9 +69,10 @@ public interface HTTPClient
   public static final String URL_TYPE_DASH  = "dash";
 
   //method types
-  public static final String METHOD_GET   = "GET";
-  public static final String METHOD_POST  = "POST";
-  public static final String METHOD_PUT   = "PUT";
+  public static final String METHOD_GET     = "GET";
+  public static final String METHOD_POST    = "POST";
+  public static final String METHOD_PUT     = "PUT";
+  public static final String METHOD_DELETE  = "DELETE";
 
   /**
    * add the authorization header
@@ -137,6 +138,11 @@ public interface HTTPClient
    * send an HTTP PUT request
    */
   public void doPUT(URL u) throws Exception;
+
+  /**
+   * send an HTTP DELETE request
+   */
+  public void doDELETE(URL u) throws Exception;
 
   /**
    * @return the response after making a request

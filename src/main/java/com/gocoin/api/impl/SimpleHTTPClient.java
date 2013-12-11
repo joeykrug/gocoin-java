@@ -37,4 +37,12 @@ public class SimpleHTTPClient extends AbstractHTTPClient
   {
     doREQUEST(u);
   }
+
+  /**
+   * send an HTTP DELETE request
+   */
+  public void doDELETE(URL u) throws Exception
+  {
+    doREQUEST(u);
+  }
 }

@@ -21,6 +21,11 @@ import com.gocoin.api.Scope;
 import com.gocoin.api.HTTPClient;
 import com.gocoin.api.pojo.Account;
 import com.gocoin.api.pojo.Application;
+import com.gocoin.api.pojo.ExchangeRates;
+import com.gocoin.api.pojo.Invoice;
+import com.gocoin.api.pojo.InvoiceSearchResult;
+import com.gocoin.api.pojo.Merchant;
+import com.gocoin.api.pojo.SearchCriteria;
 import com.gocoin.api.pojo.Token;
 import com.gocoin.api.pojo.User;
 
@@ -32,6 +37,7 @@ public class GoCoinApiTestCase
 {
   private final String MERCHANT_ID    = "81d9b056-6351-4ca9-950c-2e7932db0aec";
   private final String ACCOUNT_ID     = "e6634e90-8ae2-4fc1-97a2-262990c755f4"; //4e4f0ee1-db6c-4abe-8655-044b59282bec
+  private final String INVOICE_ID     = "037e9be5-c2a2-4b20-8d3a-1781de5b1b84";
   private final String USER_ID        = "9127be09-24d0-4989-bc45-eb143c65506d";
   private final String CLIENT_ID      = "661b989eda4e39e65456646f3a214e35039a8823666916dac717f746afa34018";
   private final String CLIENT_SECRET  = "977691490acff424973dfcf3fa32ba5161c7cda673af7b69a82c232e943f668b";
@@ -62,6 +68,18 @@ public class GoCoinApiTestCase
   }
 
   /**
+   * test the exchange rate
+   */
+  @Test
+  public void testExchangeRate()
+  {
+    ExchangeRates rates = GoCoin.getExchangeRates();
+    System.out.printf("[DEBUG]: EXCHANGE %s%n",rates);
+    System.out.printf("[DEBUG]: EXCHANGE RATE %s%n",rates.getExchangeRate("BTC","USD"));
+    //System.out.printf("[DEBUG]: EXCHANGE JSON %s%n",rates.toJSON());
+  }
+
+  /**
    * test the timestamp stuff
    */
   //@Test
@@ -85,6 +103,51 @@ public class GoCoinApiTestCase
     Token t = new Token(TOKEN_ALL_SCOPES,"","");
     Collection<Account> accounts = GoCoin.getAccountService().getAccounts(t,MERCHANT_ID);
     System.out.println("[DEBUG]: accounts\n"+accounts);
+  }
+
+  /**
+   * test the invoice service
+   */
+  //@Test
+  public void testInvoiceService()
+  {
+    Token t = new Token(TOKEN_ALL_SCOPES,"","");
+    //perform a search
+    InvoiceSearchResult result = GoCoin.getInvoiceService().searchInvoices(t,new SearchCriteria(MERCHANT_ID));
+    System.out.println("[DEBUG]: invoice search result: "+result);
+    //get the invoice by id
+    Invoice i = GoCoin.getInvoiceService().getInvoice(t,INVOICE_ID);
+    System.out.println("[DEBUG]: invoice: "+i);
+    boolean TEST_NEW_INVOICE = false;
+    if (TEST_NEW_INVOICE)
+    {
+      //create a new invoice
+      Invoice newInvoice = new Invoice();
+      newInvoice.setPriceCurrency("BTC");
+      newInvoice.setBasePrice("123.00");
+      newInvoice.setBasePriceCurrency("USD");
+      newInvoice.setNotificationLevel("all");
+      newInvoice = GoCoin.getInvoiceService().createInvoice(t,MERCHANT_ID,newInvoice);
+      System.out.println("[DEBUG]: created invoice: "+newInvoice);
+    }
+  }
+
+  /**
+   * test the merchant service
+   */
+  //@Test
+  public void testMerchantService()
+  {
+    Token t = new Token(TOKEN_ALL_SCOPES,"","");
+    //get the merchant
+    Merchant m = GoCoin.getMerchantService().getMerchant(t,MERCHANT_ID);
+    System.out.println("[DEBUG]: merchant: "+m);
+    m.setCity("Utica");
+    m.setRegion("NY");
+    m.setContactName("Contact");
+    //update the merchant
+    m = GoCoin.getMerchantService().updateMerchant(t,m);
+    System.out.println("[DEBUG]: updated merchant: "+m);
   }
 
   /**

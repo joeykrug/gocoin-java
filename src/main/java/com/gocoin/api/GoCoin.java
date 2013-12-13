@@ -55,6 +55,11 @@ public final class GoCoin
   public static final String EXCHANGE_HOST = "x.g0cn.com";
   public static final String EXCHANGE_PATH = "/prices";
 
+  //the production API hosts to use
+  public static final String PRODUCTION_HOST = "api.gocoin.com";
+  public static final String PRODUCTION_DASHBOARD_HOST = "dashboard.gocoin.com";
+  public static final String PRODUCTION_API_VERSION = "/v1";
+
   /** debug flag */
   public static boolean DEBUG = false;
 
@@ -68,7 +73,18 @@ public final class GoCoin
    */
   static public HTTPClient getHTTPClient()
   {
-    return new SimpleHTTPClient();
+    HTTPClient client = new SimpleHTTPClient();
+    //for security, the *only* way to use production mode
+    //is to set the system property: -Dgocoin.api.mode="production"
+    String apiMode = System.getProperty("gocoin.api.mode");
+    //set default options
+    if ("production".equalsIgnoreCase(apiMode))
+    {
+      client.setRequestOption(HTTPClient.KEY_OPTION_HOST,GoCoin.PRODUCTION_HOST);
+      client.setRequestOption(HTTPClient.KEY_OPTION_DASHBOARD_HOST,GoCoin.PRODUCTION_DASHBOARD_HOST);
+      client.setRequestOption(HTTPClient.KEY_OPTION_API_VERSION,GoCoin.PRODUCTION_API_VERSION);
+    }
+    return client;
   }
 
   /**

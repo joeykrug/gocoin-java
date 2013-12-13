@@ -132,13 +132,49 @@ public class HTTPUserService implements UserService
    */
   public boolean updatePassword(Token t, User u, Map<String,String> parameters)
   {
-    return false;
+    if (!parameters.containsKey("current_password") || !parameters.containsKey("password"))
+    {
+      GoCoin.log(new Exception("Invalid parameters for resetPasswordWithToken!"));
+      return false;
+    }
+
+//TODO: pull out map keys as constants
+    String path = "/users/"+u.getId()+"/password";
+
+    //get a new http client and set the options
+    //NOTE: since its a post request, the parameters get converted into JSON
+    HTTPClient client = GoCoin.getHTTPClient();
+    client.setRequestOption(HTTPClient.KEY_OPTION_PATH,path);
+    client.setRequestOption(HTTPClient.KEY_OPTION_METHOD,HTTPClient.METHOD_PUT);
+    client.addAuthorizationHeader(t);
+    //create the json map
+    Map<String,String> body = new LinkedHashMap<String,String>();
+    body.put("current_password",parameters.get("current_password"));
+    body.put("currentpassword",parameters.get("current_password"));
+    body.put("password",parameters.get("password"));
+    body.put("newpassword",parameters.get("password"));
+    //set the body
+    client.setRequestBody(GoCoin.toJSON(body));
+    try
+    {
+      //make the PUT request
+      client.doPUT(client.createURL(HTTPClient.URL_TYPE_API));
+      //check the response
+      GoCoin.checkResponse(client);
+      //return true if we got a 204
+      return true;
+    }
+    catch (Exception e)
+    {
+      GoCoin.log(e);
+      return false;
+    }
   }
 
   /**
    * @return a boolean representing whether or not the password was reset
    */
-  public boolean resetPassword(Token t, User u, Map<String,String> parameters)
+  public boolean resetPassword(Token t, User u)
   {
     //get a new http client and set the options
     //NOTE: since its a post request, the parameters get converted into JSON
@@ -212,7 +248,7 @@ public class HTTPUserService implements UserService
   /**
    * @return a boolean representing whether or not the confirmation email was sent
    */
-  public boolean requestConfirmationEmail(Token t, User u, Map<String,String> parameters)
+  public boolean requestConfirmationEmail(Token t, User u)
   {
     HTTPClient client = GoCoin.getHTTPClient();
     client.setRequestOption(HTTPClient.KEY_OPTION_PATH,"/users/request_new_confirmation_email");

@@ -26,6 +26,7 @@ import java.util.Properties;
 import com.gocoin.api.GoCoin;
 import com.gocoin.api.pojo.Account;
 import com.gocoin.api.pojo.Application;
+import com.gocoin.api.pojo.AuthCode;
 import com.gocoin.api.pojo.ExchangeRates;
 import com.gocoin.api.pojo.Invoice;
 import com.gocoin.api.pojo.InvoiceSearchResult;
@@ -40,6 +41,7 @@ import com.gocoin.api.pojo.User;
  */
 public class GoCoinCLI
 {
+//TODO: get the version and artifact from the maven pom file
   /** version */
   public static final String VERSION = "1.0.0-SNAPSHOT";
 
@@ -52,6 +54,9 @@ public class GoCoinCLI
   /** token */
   protected Token token = null;
 
+  /** auth code */
+  protected AuthCode authcode = null;
+
   /** token file */
   protected String tokenFile = null;
 
@@ -59,6 +64,8 @@ public class GoCoinCLI
   protected Map<String,Object> params = new LinkedHashMap<String,Object>();
 
   //the api operations without the -- prefix
+  public static final String API_METHOD_VERSION             = "version";
+  public static final String API_METHOD_GET_TOKEN           = "get-token";
   public static final String API_METHOD_GET_INVOICE         = "get-invoice";
   public static final String API_METHOD_GET_ACCOUNTS        = "get-accounts";
   public static final String API_METHOD_GET_MERCHANT        = "get-merchant";
@@ -70,6 +77,7 @@ public class GoCoinCLI
   public static final String API_METHOD_SEARCH_INVOICES     = "search-invoices";
   public static final String API_METHOD_GET_EXCHANGE        = "get-exchange";
 
+  //collections that help us determine valid cli args
   public static Collection<String> apiMethods = null;
   public static Collection<String> searchOptions = new LinkedList<String>();
 
@@ -77,7 +85,8 @@ public class GoCoinCLI
   {
     //the allowed api methods
     String[] methods = new String[] {
-      API_METHOD_GET_EXCHANGE,
+      API_METHOD_VERSION,
+      API_METHOD_GET_EXCHANGE, API_METHOD_GET_TOKEN,
       API_METHOD_GET_ACCOUNTS,
       API_METHOD_GET_INVOICE, API_METHOD_CREATE_INVOICE, API_METHOD_SEARCH_INVOICES,
       API_METHOD_GET_MERCHANT,
@@ -106,11 +115,7 @@ public class GoCoinCLI
 
     //parse command line arguments
     Properties props = cli.initArgs(args);
-
-    if (GoCoin.VERBOSE)
-    {
-      System.out.println("PROPERTIES:\n"+props);
-    }
+    if (GoCoin.VERBOSE) { System.out.println("PROPERTIES:\n"+props); }
 
     //run the program
     try 
@@ -145,6 +150,12 @@ public class GoCoinCLI
    */
   public void runProgram(Properties props) throws Exception
   {
+    if (API_METHOD_VERSION.equalsIgnoreCase(apiMethod))
+    {
+      System.out.println("GoCoin Java API, version: "+VERSION);
+      System.exit(1);
+    }
+    //everything else needs to have a token
     if (!GoCoin.hasValue(getToken()))
     {
       throw new Exception("Token must be passed in order to use the GoCoin CLI!");
@@ -153,6 +164,11 @@ public class GoCoinCLI
     {
       ExchangeRates rates = GoCoin.getExchangeRates();
       GoCoin.print(rates.toJSON());
+    }
+    else if (API_METHOD_GET_TOKEN.equalsIgnoreCase(apiMethod))
+    {
+      Token t = GoCoin.getAuthToken((AuthCode)params.get("authcode"));
+      GoCoin.print(t.toJSON());
     }
     else if (API_METHOD_GET_ACCOUNTS.equalsIgnoreCase(apiMethod))
     {
@@ -252,23 +268,16 @@ public class GoCoinCLI
           //print usage and exit
           usage(props);
         }
-        //config file
-        else if ("-c".equals(args[i]))
-        {
-          //TODO: support the ability to pass in a configuration/properties file
-        }
         //debug
         else if ("-d".equals(args[i]))
         {
           GoCoin.DEBUG = true; 
-          GoCoin.DEBUG_LEVEL = Integer.parseInt(args[++i]);
         }
         //verbose
         else if ("-v".equals(args[i]))
         {
           GoCoin.DEBUG = true; 
           GoCoin.VERBOSE = true; 
-          GoCoin.DEBUG_LEVEL = Integer.parseInt(args[++i]);
         }
         //token
         else if ("--token-file".equals(args[i]))
@@ -281,8 +290,25 @@ public class GoCoinCLI
           if (apiMethods.contains(arg))
           {
             apiMethod = arg;
-            if (API_METHOD_GET_EXCHANGE.equals(arg))
+            if (API_METHOD_VERSION.equals(arg))
             {
+              //no params needed
+            }
+            else if (API_METHOD_GET_EXCHANGE.equals(arg))
+            {
+              //no params needed
+            }
+            else if (API_METHOD_GET_TOKEN.equals(arg))
+            {
+              String json = getFileContents(args[++i]);
+              AuthCode ac = new AuthCode(json);
+              //potentially use the default client id and secret from the properties file
+              if (this.authcode != null)
+              {
+                if (!GoCoin.hasValue(ac.getClientId()))     { ac.setClientId(this.authcode.getClientId()); }
+                if (!GoCoin.hasValue(ac.getClientSecret())) { ac.setClientSecret(this.authcode.getClientSecret()); }
+              }
+              params.put("authcode",ac);
             }
             else if (API_METHOD_GET_ACCOUNTS.equals(arg))
             {
@@ -375,10 +401,33 @@ public class GoCoinCLI
    */
   public Properties getDefaultProperties()
   {
-    //find the default properties file via the class loader
-    URL u = this.getClass().getClassLoader().getResource("cli.properties");
+    final String DEFAULT_PROPERTIES_FILE = "gocoin.properties";
+
+    //try to find the default properties file via the class loader
+    URL u = this.getClass().getClassLoader().getResource(DEFAULT_PROPERTIES_FILE);
+    if (u == null)
+    {
+      try
+      {
+        String propFile = System.getProperty(DEFAULT_PROPERTIES_FILE);
+        File f = null;
+        //use the given file via the system property
+        //otherwise, look for the properties file in the current directory
+        if (GoCoin.hasValue(propFile)) { f = new File(propFile); }
+        else                           { f = new File(DEFAULT_PROPERTIES_FILE); }
+        //use the url from the file if it exists
+        if (f != null && f.exists()) { u = f.toURI().toURL(); }
+      }
+      catch (Exception e)
+      {
+        if (GoCoin.VERBOSE)
+        {
+          GoCoin.log(e);
+        }
+      }
+    }
     if (u == null) { return null; }
-    GoCoin.printf("[WARNING]: Using default properties [%s]",u);
+    if (GoCoin.VERBOSE) { GoCoin.printf("[WARNING]: Using default properties [%s]",u); }
     Properties p = new Properties();
     InputStream is = null;
     try
@@ -399,6 +448,29 @@ public class GoCoinCLI
         catch (IOException e) { }
       }
     }
+    //set the token, but only if someone didn't give us a token file to use
+    if (!GoCoin.hasValue(this.tokenFile) && p.containsKey("token"))
+    {
+      String t = p.getProperty("token");
+      if (GoCoin.hasValue(t))
+      {
+        if (GoCoin.VERBOSE) { GoCoin.printf("[WARNING]: Using token from properties file"); }
+        this.token = new Token(t,"","");
+      }
+    }
+    //set the auth code
+    if (p.containsKey("client.id") && p.containsKey("client.secret"))
+    {
+      String id = p.getProperty("client.id");
+      String secret = p.getProperty("client.secret");
+      if (GoCoin.hasValue(id) && GoCoin.hasValue(secret))
+      {
+        if (GoCoin.VERBOSE) { GoCoin.printf("[WARNING]: Using client id and secret from properties file"); }
+        this.authcode = new AuthCode(null,null,id,secret,null);
+      }
+
+    }
+
     return p;
   }
 
@@ -459,10 +531,12 @@ public class GoCoinCLI
   public static final void usage(Properties props)
   {
     StringBuilder sb = new StringBuilder("\n");
-    sb.append("Usage: java -jar ").append(JARFILE_NAME).append(" [program arguments]");
+    sb.append("Usage: java -jar ").append(JARFILE_NAME).append(" [program arguments] [options]");
     sb.append("\n\n");
+    sb.append("    --version\n");
     sb.append("    --token-file [token file]\n");
     sb.append("    --get-exchange\n");
+    sb.append("    --get-token [exchange code json file]\n");
     sb.append("    --get-accounts [merchant id]\n");
     sb.append("    --get-invoice [invoice id]\n");
     sb.append("    --get-merchant [merchant id]\n");
@@ -479,6 +553,13 @@ public class GoCoinCLI
     sb.append("            -end [end time, format: "+GoCoin.TIMESTAMP_PATTERN_CUT+"]\n");
     sb.append("            -page [page number]\n");
     sb.append("            -per [per page]\n");
+    sb.append("\n");
+    sb.append("    options:\n");
+    sb.append("        -h|-?  print help/usage\n");
+    sb.append("        -d     debug\n");
+    sb.append("        -v     verbose\n");
+    sb.append("\n");
+    sb.append("NOTE: storing client id, secret, and token in gocoin.properties is also allowed\n");
     sb.append("\n");
     sb.append("ie: java -jar ").append(JARFILE_NAME);
     sb.append(" --token-file your.token.file --get-resource-owner\n");

@@ -18,7 +18,9 @@ public enum Scope
     MERCHANTS_READ,       //Can read all merchant info associated with a user.
     MERCHANT_READ_WRITE,  //Can read and write to all merchants associated with a user.
     INVOICE_READ,         //Can read all invoice info.
-    INVOICE_READ_WRITE    //Can read and write to invoices.
+    INVOICE_READ_WRITE,   //Can read and write to invoices.
+    OAUTH_READ,           //Read applications belonging to a specified user.
+    OAUTH_READ_WRITE      //Can read and write to user's applications.
   ;
 
   @Override
@@ -49,9 +51,10 @@ public enum Scope
   static public String getAllScopes()
   {
     return getScope(
-      //Scope.values()
+      //Scope.values()     //Using all scopes doesn't work, the service doesn't like it
       Scope.USER_READ_WRITE, Scope.USER_PASSWORD_WRITE,
-      Scope.MERCHANT_READ_WRITE, Scope.INVOICE_READ_WRITE
+      Scope.MERCHANT_READ_WRITE, Scope.INVOICE_READ_WRITE,
+      Scope.OAUTH_READ_WRITE
     );
   }
 

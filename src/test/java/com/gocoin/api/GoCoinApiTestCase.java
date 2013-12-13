@@ -52,7 +52,6 @@ public class GoCoinApiTestCase
   private final String TOKEN_CONFIRM_USER         = "6f1ba10b-b241-441d-bad7-14afa9a3ec10";
   private final String TOKEN_RESET_PASSWORD       = "7286b257-10ef-42ba-bbef-4d2b12d490cc";
 
-//TODO: move scope into an enum
 //TODO: move state into an enum
 
   /**
@@ -209,7 +208,7 @@ public class GoCoinApiTestCase
     boolean TEST_RESET_PW = false;
     if (TEST_RESET_PW)
     {
-      boolean reset = GoCoin.getUserService().resetPassword(t,u,null);
+      boolean reset = GoCoin.getUserService().resetPassword(t,u);
       System.out.println("[DEBUG]: Reset password result: ["+reset+"]");
     }
     boolean TEST_RESET_PW_WITH_TOKEN = false;
@@ -226,7 +225,7 @@ public class GoCoinApiTestCase
     if (TEST_CONFIRMATION_EMAIL)
     {
       t = new Token(TOKEN_ALL_SCOPES,"","");
-      boolean email = GoCoin.getUserService().requestConfirmationEmail(t,u,null);
+      boolean email = GoCoin.getUserService().requestConfirmationEmail(t,u);
       System.out.println("[DEBUG]: Confirmation email result: ["+email+"]");
     }
     boolean TEST_CONFIRM_USER = false;
@@ -255,7 +254,7 @@ public class GoCoinApiTestCase
   /**
    * test the api
    */
-  //@Test
+  @Test
   public void testApiCodeAndToken() throws Exception
   {
     System.out.println("[DEBUG]: running testApiCodeAndToken test case...");

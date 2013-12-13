@@ -58,10 +58,6 @@ abstract public class AbstractHTTPClient implements HTTPClient
     options.put(HTTPClient.KEY_OPTION_REQUEST_ID, HTTPClient.DEFAULT_OPTION_REQUEST_ID);
     options.put(HTTPClient.KEY_OPTION_REDIRECT_URI,HTTPClient.DEFAULT_OPTION_REDIRECT_URI);
 
-    //default parameters
-    //parameters.put(HTTPClient.KEY_OPTION_CLIENT_ID, HTTPClient.DEFAULT_OPTION_CLIENT_ID);
-    //parameters.put(HTTPClient.KEY_OPTION_CLIENT_SECRET, HTTPClient.DEFAULT_OPTION_CLIENT_SECRET);
-
     //default headers
     headers.put(HTTPClient.KEY_HEADER_CONTENT_TYPE, HTTPClient.DEFAULT_HEADER_CONTENT_TYPE);
   }

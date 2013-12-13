@@ -22,6 +22,7 @@ import java.util.TimeZone;
 import org.json.JSONArray;
 
 import com.gocoin.api.impl.SimpleHTTPClient;
+import com.gocoin.api.pojo.AuthCode;
 import com.gocoin.api.pojo.ExchangeRates;
 import com.gocoin.api.pojo.Token;
 import com.gocoin.api.services.AccountService;
@@ -59,9 +60,6 @@ public final class GoCoin
 
   /** verbose flag */
   public static boolean VERBOSE = false;
-
-  /** debug level */
-  public static int DEBUG_LEVEL = 1;
 
   /**
    * play the role of a factory and just return our simple client
@@ -156,17 +154,27 @@ public final class GoCoin
    */
   static public Token getAuthToken(String code, String clientId, String clientSecret, String redirectUri)
   {
+    return GoCoin.getAuthToken(
+      new AuthCode(null,code,clientId,clientSecret,redirectUri)
+    );
+  }
+
+  /**
+   * @return an auth token for future API calls
+   */
+  static public Token getAuthToken(AuthCode auth)
+  {
     //get a new http client and set the options
     //NOTE: since its a post request, the parameters get converted into JSON
     HTTPClient client = getHTTPClient();
     client.setRequestOption(HTTPClient.KEY_OPTION_PATH,"/oauth/token");
     client.setRequestOption(HTTPClient.KEY_OPTION_METHOD,HTTPClient.METHOD_POST);
     //set parameters
-    client.setRequestParameter(HTTPClient.KEY_PARAM_GRANT_TYPE,"authorization_code");
-    client.setRequestParameter(HTTPClient.KEY_PARAM_CODE,code);
-    client.setRequestParameter(HTTPClient.KEY_PARAM_CLIENT_ID,clientId);
-    client.setRequestParameter(HTTPClient.KEY_PARAM_CLIENT_SECRET,clientSecret);
-    client.setRequestParameter(HTTPClient.KEY_PARAM_REDIRECT_URI,redirectUri);
+    client.setRequestParameter(HTTPClient.KEY_PARAM_GRANT_TYPE,auth.getGrantType());
+    client.setRequestParameter(HTTPClient.KEY_PARAM_CODE,auth.getCode());
+    client.setRequestParameter(HTTPClient.KEY_PARAM_CLIENT_ID,auth.getClientId());
+    client.setRequestParameter(HTTPClient.KEY_PARAM_CLIENT_SECRET,auth.getClientSecret());
+    client.setRequestParameter(HTTPClient.KEY_PARAM_REDIRECT_URI,auth.getRedirectUri());
     try
     {
       //make the POST request

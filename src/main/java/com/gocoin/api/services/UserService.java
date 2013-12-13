@@ -57,7 +57,7 @@ public interface UserService
   /**
    * @return a boolean representing whether or not the password was reset
    */
-  public boolean resetPassword(Token t, User u, Map<String,String> parameters);
+  public boolean resetPassword(Token t, User u);
 
   /**
    * @return a boolean representing whether or not the password was reset
@@ -67,7 +67,7 @@ public interface UserService
   /**
    * @return a boolean representing whether or not the confirmation email was sent
    */
-  public boolean requestConfirmationEmail(Token t, User u, Map<String,String> parameters);
+  public boolean requestConfirmationEmail(Token t, User u);
 
   /**
    * @return a boolean representing whether or not the user was confirmed

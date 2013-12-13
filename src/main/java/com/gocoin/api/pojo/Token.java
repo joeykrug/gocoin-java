@@ -6,7 +6,12 @@
  */
 package com.gocoin.api.pojo;
 
+import java.util.Map;
+import java.util.LinkedHashMap;
+
 import org.json.JSONObject;
+
+import com.gocoin.api.GoCoin;
 
 /**
  * a simple POJO class to represent a token
@@ -59,6 +64,21 @@ public class Token
     sb.append("Token [").append(getToken()).append(",type=").append(getType());
     sb.append(",scope=").append(getScope()).append("]");
     return sb.toString();
+  }
+
+  public String toJSON()
+  {
+    Map<String,Object> parameters = new LinkedHashMap<String,Object>();
+    parameters.put("token",getToken());
+    if (GoCoin.hasValue(getType()))
+    {
+      parameters.put("type",getType());
+    }
+    if (GoCoin.hasValue(getScope()))
+    {
+      parameters.put("scope",getScope());
+    }
+    return GoCoin.toJSON(parameters);
   }
 
 }

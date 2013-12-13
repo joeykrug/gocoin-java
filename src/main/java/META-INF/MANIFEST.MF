@@ -1,2 +1,3 @@
 Manifest-Version: 1.0
-Class-Path: 
+Class-Path: json-20131018.jar lib/json-20131018.jar ../lib/json-20131018.jar
+Main-Class: com.gocoin.api.GoCoinCLI

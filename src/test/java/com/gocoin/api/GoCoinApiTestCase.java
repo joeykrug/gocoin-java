@@ -203,7 +203,7 @@ public class GoCoinApiTestCase
     //test the user applications
     if (TEST_APPS)
     {
-      Collection<Application> apps = GoCoin.getUserService().getUserApplications(t,u,null);
+      Collection<Application> apps = GoCoin.getUserService().getUserApplications(t,u);
       System.out.println("[DEBUG]: applications\n"+apps);
     }
     boolean TEST_RESET_PW = false;

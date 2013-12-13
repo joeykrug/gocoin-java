@@ -46,6 +46,9 @@ public class User
   private boolean confirmed = false;
   private String merchantId = null;
 
+  public User()
+  {
+  }
 
   public User(String jsonText)
   {
@@ -55,12 +58,12 @@ public class User
   public User(JSONObject json)
   {
     this(
-      json.getString("id"), json.getString("first_name"), json.getString("last_name"),
-      json.getString("email"), json.getString("created_at"), json.getString("updated_at"),
-      null, json.getBoolean("confirmed"), json.getString("merchant_id")
+      json.optString("id"), json.optString("first_name"), json.optString("last_name"),
+      json.optString("email"), json.optString("created_at"), json.optString("updated_at"),
+      null, json.optBoolean("confirmed"), json.optString("merchant_id")
     );
     //try to set the image url
-    Object url = json.get("image_url");
+    Object url = json.opt("image_url");
     if (url != null) { setImageURL(url.toString()); }
   }
 

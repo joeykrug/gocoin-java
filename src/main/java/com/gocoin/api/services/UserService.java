@@ -77,5 +77,5 @@ public interface UserService
   /**
    * @return a java.util.Collection of applications given a user
    */
-  public Collection<Application> getUserApplications(Token t, User u, Map<String,String> parameters);
+  public Collection<Application> getUserApplications(Token t, User u);
 }

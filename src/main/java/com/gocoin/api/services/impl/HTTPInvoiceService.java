@@ -31,7 +31,7 @@ public class HTTPInvoiceService implements InvoiceService
     client.addAuthorizationHeader(t);
     //add the search criteria
     client.setRequestParameters(criteria.toParameterMap());
-    System.out.println("[DEBUG]: PARAMETERS:\n"+criteria.toParameterMap());
+    if (GoCoin.DEBUG) { System.out.println("[DEBUG]: SEARCH PARAMETERS:\n"+criteria.toParameterMap()); }
     try
     {
       //make the GET request

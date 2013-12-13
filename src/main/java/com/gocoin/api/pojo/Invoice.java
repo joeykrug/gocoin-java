@@ -119,103 +119,103 @@ public class Invoice
   public Invoice(JSONObject json)
   {
     this(
-      json.getString("id"), json.getString("merchant_id"),
-      json.getString("status"), json.getString("payment_address"),
-      json.getString("price"), json.getString("price_currency"),
-      json.getString("base_price"), json.getString("base_price_currency"),
-      json.getString("created_at"), json.getString("updated_at"),
-      json.getString("expires_at"), json.getString("server_time")
+      json.optString("id"), json.optString("merchant_id"),
+      json.optString("status"), json.optString("payment_address"),
+      json.optString("price"), json.optString("price_currency"),
+      json.optString("base_price"), json.optString("base_price_currency"),
+      json.optString("created_at"), json.optString("updated_at"),
+      json.optString("expires_at"), json.optString("server_time")
     );
 
-    Object btcRate = json.get("btc_spot_rate");
+    Object btcRate = json.opt("btc_spot_rate");
     if (GoCoin.hasValue(btcRate)) { this.btcSpotRate = btcRate.toString(); }
 
-    Object usdRate = json.get("usd_spot_rate");
+    Object usdRate = json.opt("usd_spot_rate");
     if (GoCoin.hasValue(usdRate)) { this.usdSpotRate = usdRate.toString(); }
 
-    Object confirmations = json.get("confirmations_required");
+    Object confirmations = json.opt("confirmations_required");
     if (GoCoin.hasValue(confirmations))
     {
       try { this.confirmationsRequired = Integer.valueOf(confirmations.toString()); }
       catch (NumberFormatException nfe) { }
     }
 
-    Object level = json.get("notification_level");
+    Object level = json.opt("notification_level");
     if (GoCoin.hasValue(level)) { this.notificationLevel = level.toString(); }
 
-    Object callback = json.get("callback_url");
+    Object callback = json.opt("callback_url");
     if (GoCoin.hasValue(callback)) { this.callbackUrl = callback.toString(); }
 
-    Object redirect = json.get("redirect_url");
+    Object redirect = json.opt("redirect_url");
     if (GoCoin.hasValue(redirect)) { this.redirectUrl = redirect.toString(); }
 
-    Object order = json.get("order_id");
+    Object order = json.opt("order_id");
     if (GoCoin.hasValue(order)) { this.orderId = order.toString(); }
 
-    Object name = json.get("item_name");
+    Object name = json.opt("item_name");
     if (GoCoin.hasValue(name)) { this.itemName = name.toString(); }
 
-    Object sku = json.get("item_sku");
+    Object sku = json.opt("item_sku");
     if (GoCoin.hasValue(sku)) { this.itemSku = sku.toString(); }
 
-    Object desc = json.get("item_description");
+    Object desc = json.opt("item_description");
     if (GoCoin.hasValue(desc)) { this.itemDescription = desc.toString(); }
 
-    Object physical = json.get("physical");
+    Object physical = json.opt("physical");
     if (GoCoin.hasValue(physical)) { this.physical = physical.toString(); }
 
-    Object customer = json.get("customer_name");
+    Object customer = json.opt("customer_name");
     if (GoCoin.hasValue(customer)) { this.customerName = customer.toString(); }
 
-    Object addr1 = json.get("customer_address_1");
+    Object addr1 = json.opt("customer_address_1");
     if (GoCoin.hasValue(addr1)) { this.customerAddress1 = addr1.toString(); }
 
-    Object addr2 = json.get("customer_address_2");
+    Object addr2 = json.opt("customer_address_2");
     if (GoCoin.hasValue(addr2)) { this.customerAddress2 = addr2.toString(); }
 
-    Object city = json.get("customer_city");
+    Object city = json.opt("customer_city");
     if (GoCoin.hasValue(city)) { this.customerCity = city.toString(); }
 
-    Object region = json.get("customer_region");
+    Object region = json.opt("customer_region");
     if (GoCoin.hasValue(region)) { this.customerRegion = region.toString(); }
 
-    Object country = json.get("customer_country");
+    Object country = json.opt("customer_country");
     if (GoCoin.hasValue(country)) { this.customerCountry = country.toString(); }
 
-    Object postal = json.get("customer_postal_code");
+    Object postal = json.opt("customer_postal_code");
     if (GoCoin.hasValue(postal)) { this.customerPostalCode = postal.toString(); }
 
-    Object email = json.get("customer_email");
+    Object email = json.opt("customer_email");
     if (GoCoin.hasValue(email)) { this.customerEmail = email.toString(); }
 
-    Object phone = json.get("customer_phone");
+    Object phone = json.opt("customer_phone");
     if (GoCoin.hasValue(phone)) { this.customerPhone = phone.toString(); }
 
-    Object user1 = json.get("user_defined_1");
+    Object user1 = json.opt("user_defined_1");
     if (GoCoin.hasValue(user1)) { this.userDefined1 = user1.toString(); }
 
-    Object user2 = json.get("user_defined_2");
+    Object user2 = json.opt("user_defined_2");
     if (GoCoin.hasValue(user2)) { this.userDefined2 = user2.toString(); }
 
-    Object user3 = json.get("user_defined_3");
+    Object user3 = json.opt("user_defined_3");
     if (GoCoin.hasValue(user3)) { this.userDefined3 = user3.toString(); }
 
-    Object user4 = json.get("user_defined_4");
+    Object user4 = json.opt("user_defined_4");
     if (GoCoin.hasValue(user4)) { this.userDefined4 = user4.toString(); }
 
-    Object user5 = json.get("user_defined_5");
+    Object user5 = json.opt("user_defined_5");
     if (GoCoin.hasValue(user5)) { this.userDefined5 = user5.toString(); }
 
-    Object user6 = json.get("user_defined_6");
+    Object user6 = json.opt("user_defined_6");
     if (GoCoin.hasValue(user6)) { this.userDefined6 = user6.toString(); }
 
-    Object user7 = json.get("user_defined_7");
+    Object user7 = json.opt("user_defined_7");
     if (GoCoin.hasValue(user7)) { this.userDefined7 = user7.toString(); }
 
-    Object user8 = json.get("user_defined_8");
+    Object user8 = json.opt("user_defined_8");
     if (GoCoin.hasValue(user8)) { this.userDefined8 = user8.toString(); }
 
-    Object data = json.get("data");
+    Object data = json.opt("data");
     if (GoCoin.hasValue(data)) { this.data = data; }
   }
 
@@ -445,7 +445,7 @@ public class Invoice
     return sb.toString();
   }
 
-  public String toJSON()
+  public Map<String,Object> getJSONMap()
   {
     Map<String,Object> parameters = new LinkedHashMap<String,Object>();
     if (GoCoin.hasValue(getId()))
@@ -596,6 +596,11 @@ public class Invoice
     {
       parameters.put("data",getData());
     }
-    return GoCoin.toJSON(parameters);
+    return parameters;
+  }
+
+  public String toJSON()
+  {
+    return GoCoin.toJSON(getJSONMap());
   }
 }

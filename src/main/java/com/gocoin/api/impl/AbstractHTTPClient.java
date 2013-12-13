@@ -329,7 +329,7 @@ abstract public class AbstractHTTPClient implements HTTPClient
       String method = getRequestOption(HTTPClient.KEY_OPTION_METHOD);
 
       //debug
-      GoCoin.printf("[WARNING]: Sending %s request to URL [%s]...", method, u);
+      if (GoCoin.DEBUG) { GoCoin.printf("[WARNING]: Sending %s request to URL [%s]...", method, u); }
 
       //open the URL connection
       HttpURLConnection conn = (HttpURLConnection)u.openConnection();
@@ -345,7 +345,7 @@ abstract public class AbstractHTTPClient implements HTTPClient
       {
         for(Map.Entry<String,String> header : headers.entrySet())
         {
-          GoCoin.printf("[DEBUG]: Adding request header [%s]=>[%s]", header.getKey(), header.getValue());
+          if (GoCoin.VERBOSE) { GoCoin.printf("[DEBUG]: Adding request header [%s]=>[%s]", header.getKey(), header.getValue()); }
           conn.setRequestProperty(header.getKey(),header.getValue());
         }
       }
@@ -354,7 +354,7 @@ abstract public class AbstractHTTPClient implements HTTPClient
       if (!HTTPClient.METHOD_GET.equals(method))
       {
         String body = getRequestBody();
-        GoCoin.printf("[DEBUG]: Request body: %n%s", body);
+        if (GoCoin.VERBOSE) { GoCoin.printf("[DEBUG]: Request body: %n%s", body); }
         conn.setDoOutput(true);
         DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
         wr.writeBytes(body);
@@ -366,8 +366,8 @@ abstract public class AbstractHTTPClient implements HTTPClient
       this.responseCode = conn.getResponseCode();
       this.responseMsg = conn.getResponseMessage();
 
-      GoCoin.printf("[DEBUG]: Response Code: [%d]", responseCode);
-      GoCoin.printf("[DEBUG]: Response Message: [%s]", responseMsg);
+      if (GoCoin.DEBUG) { GoCoin.printf("[DEBUG]: Response Code: [%d]", responseCode); }
+      if (GoCoin.DEBUG) { GoCoin.printf("[DEBUG]: Response Message: [%s]", responseMsg); }
 
       //get our response input stream
       if (responseCode >= 200 && responseCode <= 299)
@@ -401,8 +401,11 @@ abstract public class AbstractHTTPClient implements HTTPClient
       }
 
       //print result
-      GoCoin.printf("[DEBUG]: Response Body:");
-      GoCoin.print(getResponse());
+      if (GoCoin.VERBOSE)
+      {
+        GoCoin.printf("[DEBUG]: Response Body:");
+        GoCoin.print(getResponse());
+      }
     }
     catch (Exception e)
     {

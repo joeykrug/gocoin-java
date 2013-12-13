@@ -8,11 +8,14 @@ package com.gocoin.api.pojo;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
 
 import com.gocoin.api.GoCoin;
+import com.gocoin.api.JSON;
 
 /**
  * a simple POJO class to represent an invoice search result
@@ -35,10 +38,10 @@ public class InvoiceSearchResult
 
   public InvoiceSearchResult(JSONObject json)
   {
-    Object status = json.get("status");
+    Object status = json.opt("status");
     if (GoCoin.hasValue(status)) { this.status = status.toString(); }
 
-    JSONArray invoices = json.getJSONArray("invoices");
+    JSONArray invoices = json.optJSONArray("invoices");
     if (invoices != null)
     {
       for(int i=0; i<invoices.length(); i++)
@@ -47,24 +50,24 @@ public class InvoiceSearchResult
       }
     }
 
-    JSONObject pagingInfo = json.getJSONObject("paging_info");
+    JSONObject pagingInfo = json.optJSONObject("paging_info");
     if (pagingInfo != null)
     {
-      Object total = pagingInfo.get("total");
+      Object total = pagingInfo.opt("total");
       if (GoCoin.hasValue(total))
       {
         try { this.total = Integer.valueOf(total.toString()).intValue(); }
         catch (Exception e) { }
       }
 
-      Object page = pagingInfo.get("page");
+      Object page = pagingInfo.opt("page");
       if (GoCoin.hasValue(page))
       {
         try { this.page = Integer.valueOf(page.toString()).intValue(); }
         catch (Exception e) { }
       }
 
-      Object perPage = pagingInfo.get("per_page");
+      Object perPage = pagingInfo.opt("per_page");
       if (GoCoin.hasValue(perPage))
       {
         try { this.perPage = Integer.valueOf(perPage.toString()).intValue(); }
@@ -104,5 +107,39 @@ public class InvoiceSearchResult
     sb.append(",invoices=").append(getInvoices());
     sb.append("]");
     return sb.toString();
+  }
+
+  public String toJSON()
+  {
+    Map<String,Object> parameters = new LinkedHashMap<String,Object>();
+    if (GoCoin.hasValue(getStatus()))
+    {
+      parameters.put("status",getStatus());
+    }
+    if (GoCoin.hasValue(getTotal()))
+    {
+      parameters.put("total",getTotal());
+    }
+    if (GoCoin.hasValue(getPage()))
+    {
+      parameters.put("page",getPage());
+    }
+    if (GoCoin.hasValue(getPerPage()))
+    {
+      parameters.put("perPage",getPerPage());
+    }
+    //this one is a little special because we
+    //want the invoices to have their parameters ordered how we want em
+    Collection<JSONObject> collection = new LinkedList<JSONObject>();
+    if (GoCoin.hasValue(getInvoices()))
+    {
+      for(Invoice i : getInvoices())
+      {
+        collection.add(new JSON(i.getJSONMap()));
+      }
+    }
+    parameters.put("invoices",collection);
+    JSON json = new JSON(parameters);
+    return json.toString(2);
   }
 }

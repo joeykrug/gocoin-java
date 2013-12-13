@@ -69,54 +69,54 @@ public class Merchant
   public Merchant(JSONObject json)
   {
     this(
-      json.getString("id"), json.getString("name"),
-      json.getString("created_at"), json.getString("updated_at")
+      json.optString("id"), json.optString("name"),
+      json.optString("created_at"), json.optString("updated_at")
     );
 
-    Object addr1 = json.get("address_1");
+    Object addr1 = json.opt("address_1");
     if (GoCoin.hasValue(addr1)) { this.address1 = addr1.toString(); }
 
-    Object addr2 = json.get("address_2");
+    Object addr2 = json.opt("address_2");
     if (GoCoin.hasValue(addr2)) { this.address2 = addr2.toString(); }
 
-    Object city = json.get("city");
+    Object city = json.opt("city");
     if (GoCoin.hasValue(city)) { this.city = city.toString(); }
 
-    Object region = json.get("region");
+    Object region = json.opt("region");
     if (GoCoin.hasValue(region)) { this.region = region.toString(); }
 
-    Object country = json.get("country_code");
+    Object country = json.opt("country_code");
     if (GoCoin.hasValue(country)) { this.countryCode = country.toString(); }
 
-    Object postal = json.get("postal_code");
+    Object postal = json.opt("postal_code");
     if (GoCoin.hasValue(postal)) { this.postalCode = postal.toString(); }
 
-    Object contact = json.get("contact_name");
+    Object contact = json.opt("contact_name");
     if (GoCoin.hasValue(contact)) { this.contactName = contact.toString(); }
 
-    Object phone = json.get("phone");
+    Object phone = json.opt("phone");
     if (GoCoin.hasValue(phone)) { this.phone = phone.toString(); }
 
-    Object website = json.get("website");
+    Object website = json.opt("website");
     if (GoCoin.hasValue(website)) { this.website = website.toString(); }
 
-    Object desc = json.get("description");
+    Object desc = json.opt("description");
     if (GoCoin.hasValue(desc)) { this.description = desc.toString(); }
 
-    Object tid = json.get("tax_id");
+    Object tid = json.opt("tax_id");
     if (GoCoin.hasValue(tid)) { this.taxId = tid.toString(); }
 
-    Object logo = json.get("logo_url");
+    Object logo = json.opt("logo_url");
     if (GoCoin.hasValue(logo)) { this.logoUrl = logo.toString(); }
 
-    Object btcSplit = json.get("btc_payout_split");
+    Object btcSplit = json.opt("btc_payout_split");
     if (GoCoin.hasValue(btcSplit))
     {
       try { this.btcPayoutSplit = Double.valueOf(btcSplit.toString()); }
       catch (NumberFormatException nfe) { }
     }
 
-    Object usdSplit = json.get("usd_payout_split");
+    Object usdSplit = json.opt("usd_payout_split");
     if (GoCoin.hasValue(usdSplit))
     {
       try { this.usdPayoutSplit = Double.valueOf(usdSplit.toString()); }

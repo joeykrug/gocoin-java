@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 import com.gocoin.api.impl.SimpleHTTPClient;
 import com.gocoin.api.pojo.ExchangeRates;
@@ -53,6 +53,15 @@ public final class GoCoin
   //the exchange service url to use
   public static final String EXCHANGE_HOST = "x.g0cn.com";
   public static final String EXCHANGE_PATH = "/prices";
+
+  /** debug flag */
+  public static boolean DEBUG = false;
+
+  /** verbose flag */
+  public static boolean VERBOSE = false;
+
+  /** debug level */
+  public static int DEBUG_LEVEL = 1;
 
   /**
    * play the role of a factory and just return our simple client
@@ -276,39 +285,25 @@ public final class GoCoin
     }
   }
 
+  static public String toJSON(Collection<?> c)
+  {
+    if (GoCoin.hasValue(c))
+    {
+      JSONArray json = new JSONArray(c);
+      return json.toString(2);
+    }
+    return "";
+  }
+
   static public String toJSON(Map<String,?> map)
   {
     if (GoCoin.hasValue(map))
     {
-      JSONObject json = new JSONObject(map);
+      //use our own JSON object so the keys are sorted
+      JSON json = new JSON(map);
       return json.toString(2);
     }
     return "";
-/*
-    //system newline
-    final String NEW_LINE = System.getProperty("line.separator");
-
-    //our builder for json
-    StringBuilder json = new StringBuilder();
-    json.append("{").append(NEW_LINE);
-
-    for(Map.Entry<String,?> param : map.entrySet())
-    {
-      //append the name : value json pair
-      json.append("  \"").append(param.getKey()).append("\"");
-      json.append(" : ");
-      json.append("\"").append(param.getValue()).append("\"");
-      //append a comma if its not the last param
-      if (index++ < paramSize-1) { json.append(","); }
-      //append the new line
-      json.append(NEW_LINE);
-    }
-
-    json.append("}").append(NEW_LINE);
-
-    //return our json
-    return json.toString();
-*/
   }
 
   /**
@@ -340,4 +335,5 @@ public final class GoCoin
   {
     t.printStackTrace();
   }
+
 }

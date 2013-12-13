@@ -38,9 +38,9 @@ public class Account
   public Account(JSONObject json)
   {
     this(
-      json.getString("id"),
-      json.getString("currency_code"),
-      json.getString("balance")
+      json.optString("id"),
+      json.optString("currency_code"),
+      json.optString("balance")
     );
   }
 

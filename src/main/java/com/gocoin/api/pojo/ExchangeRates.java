@@ -38,11 +38,11 @@ public class ExchangeRates
   public ExchangeRates(JSONObject json)
   {
     this(
-      json.getString("timestamp"), null
+      json.optString("timestamp"), null
     );
 
     //add the exchange rates
-    JSONObject prices = json.getJSONObject("prices");
+    JSONObject prices = json.optJSONObject("prices");
 
     if (GoCoin.hasValue(prices))
     {

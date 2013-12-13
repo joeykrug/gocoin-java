@@ -61,17 +61,17 @@ public class Application
   public Application(JSONObject json)
   {
     this(
-      json.getInt("id"), json.getString("name"), json.getString("uid"),
-      json.getString("secret"), json.getString("redirect_uri"),
-      json.getString("created_at"), json.getString("updated_at"),
-      json.getString("owner_id"), null,
-      json.getBoolean("protected"),
-      json.getBoolean("allow_grant_type_password"),
-      json.getBoolean("allow_grant_type_authorization_code"),
-      json.getBoolean("allow_grant_type_client_credentials"),
-      json.getBoolean("allow_grant_type_implicit")
+      json.optInt("id"), json.optString("name"), json.optString("uid"),
+      json.optString("secret"), json.optString("redirect_uri"),
+      json.optString("created_at"), json.optString("updated_at"),
+      json.optString("owner_id"), null,
+      json.optBoolean("protected"),
+      json.optBoolean("allow_grant_type_password"),
+      json.optBoolean("allow_grant_type_authorization_code"),
+      json.optBoolean("allow_grant_type_client_credentials"),
+      json.optBoolean("allow_grant_type_implicit")
     );
-    Object ownerType = json.get("owner_type");
+    Object ownerType = json.opt("owner_type");
     if (GoCoin.hasValue(ownerType))
     {
       this.ownerType = ownerType.toString();

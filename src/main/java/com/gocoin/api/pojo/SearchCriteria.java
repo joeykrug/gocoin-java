@@ -28,6 +28,10 @@ public class SearchCriteria
   private String pageNumber = null;
   private String perPage = null;
 
+  public SearchCriteria()
+  {
+  }
+
   public SearchCriteria(String merchantId)
   {
     this(merchantId, null);

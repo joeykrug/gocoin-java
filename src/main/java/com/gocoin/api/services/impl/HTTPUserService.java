@@ -276,7 +276,7 @@ public class HTTPUserService implements UserService
   /**
    * @return a java.util.Collection of applications given a user
    */
-  public Collection<Application> getUserApplications(Token t, User u, Map<String,String> parameters)
+  public Collection<Application> getUserApplications(Token t, User u)
   {
     HTTPClient client = GoCoin.getHTTPClient();
     client.setRequestOption(HTTPClient.KEY_OPTION_PATH,"/users/"+u.getId()+"/applications");

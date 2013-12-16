@@ -2,6 +2,7 @@ gocoin-java
 ===========
 
 A Java client library for the GoCoin API.
+Current Version 1.0.0-SNAPSHOT
 
 ## Usage
 

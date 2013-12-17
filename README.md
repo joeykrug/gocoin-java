@@ -4,7 +4,8 @@ gocoin-java
 A Java client library for the GoCoin API.<br>
 Current Version: <br>
 1.0.0-SNAPSHOT 
-[Download .jar](http://gocoin-developers.s3.amazonaws.com/downloads/gocoin-java-1.0.0-SNAPSHOT.zip)
+[Download .jar](http://gocoin-developers.s3.amazonaws.com/downloads/gocoin-java-1.0.0-SNAPSHOT.zip)<br>
+[Maven Docs](http://gocoin-developers.s3.amazonaws.com/maven/index.html)
 
 
 ## Usage
